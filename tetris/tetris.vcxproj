@@ -127,7 +127,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source.c" />
+    <ClCompile Include="Blocks.c" />
+    <ClCompile Include="Board.c" />
+    <ClCompile Include="Errors.c" />
+    <ClCompile Include="GameLoop.c" />
+    <ClCompile Include="Colors.c" />
+    <ClCompile Include="Main.c" />
+    <ClCompile Include="Movement.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Blocks.h" />
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="Errors.h" />
+    <ClInclude Include="GameLoop.h" />
+    <ClInclude Include="Colors.h" />
+    <ClInclude Include="Movement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
