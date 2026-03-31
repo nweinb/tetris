@@ -1,82 +1,103 @@
 #include "Colors.h"
 
-CHAR_INFO* black() {
-    CHAR_INFO black;
-    black.Char.AsciiChar = ' ';
+bool set_color(CHAR_INFO* color, uint8_t color_code) {
+	if (color == NULL || color->Attributes == NULL) {
+		return false;
+	}
 
-    black.Attributes = 0;
-
-    return &black;
+	switch (color_code) {
+		case EMPTY:
+			color->Attributes = BACKGROUND_INTENSITY;
+			return true;
+		case LIGHT_BLUE:
+			color->Attributes = BACKGROUND_INTENSITY | BACKGROUND_BLUE;
+			return true;
+		case YELLOW:
+			color->Attributes = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN;
+			return true;
+		case MAGENTA:
+			color->Attributes = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE;
+			return true;
+		case GREEN:
+			color->Attributes = BACKGROUND_INTENSITY | BACKGROUND_GREEN;
+			return true;
+		case RED:
+			color->Attributes = BACKGROUND_RED;
+			return true;
+		case DARK_BLUE:
+			color->Attributes = BACKGROUND_BLUE;
+			return true;
+		case ORANGE:
+			color->Attributes = BACKGROUND_RED | BACKGROUND_GREEN;
+			return true;
+		default:
+			return false;
+	}
 }
 
-CHAR_INFO* gray() {
-    CHAR_INFO gray;
-    gray.Char.AsciiChar = ' ';
+bool print_square(uint8_t square, uint32_t column, uint32_t row, HANDLE screen_handle) {
+	COORD charBufSize = { 1, 1 };
+	COORD characterPos = { 0, 0 };
+	SMALL_RECT writeArea = { column, row, column, row };
+	CHAR_INFO color = {
+		' ',
+		BACKGROUND_INTENSITY
+	};
 
-    gray.Attributes = BACKGROUND_INTENSITY;
+	if (!set_color(&color, square)) {
+		return false;
+	}
 
-    return &gray;
-}
-
-CHAR_INFO* light_blue() {
-    CHAR_INFO lightBlue;
-    lightBlue.Char.AsciiChar = ' ';
-
-    lightBlue.Attributes = BACKGROUND_INTENSITY | BACKGROUND_BLUE;
-   
-    return &lightBlue;
-}
-
-CHAR_INFO* yellow() {
-    CHAR_INFO yellow;
-    yellow.Char.AsciiChar = ' ';
-
-    yellow.Attributes = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN;
-
-    return &yellow;
-}
-
-CHAR_INFO* magenta() {
-    CHAR_INFO magenta;
-    magenta.Char.AsciiChar = ' ';
-
-    magenta.Attributes = BACKGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_BLUE;
-
-    return &magenta;
-}
-
-CHAR_INFO* green() {
-    CHAR_INFO green;
-    green.Char.AsciiChar = ' ';
-
-    green.Attributes = BACKGROUND_INTENSITY | BACKGROUND_GREEN;
-
-    return &red;
-}
-
-CHAR_INFO* red() {
-    CHAR_INFO red;
-    red.Char.AsciiChar = ' ';
-
-    red.Attributes = BACKGROUND_RED;
-
-    return &red;
-}
-
-CHAR_INFO* dark_blue() {
-    CHAR_INFO darkBlue;
-    darkBlue.Char.AsciiChar = ' ';
-
-    darkBlue.Attributes = BACKGROUND_BLUE;
-
-    return &darkBlue;
-}
-
-CHAR_INFO* orange() {
-    CHAR_INFO orange;
-    orange.Char.AsciiChar = ' ';
-
-    orange.Attributes = BACKGROUND_RED | BACKGROUND_GREEN;
-
-    return &orange;
+	switch (square) {
+	case EMPTY:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case LIGHT_BLUE:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case YELLOW:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case MAGENTA:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case GREEN:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case RED:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case DARK_BLUE:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	case ORANGE:
+		if (!WriteConsoleOutput(screen_handle, &color, charBufSize, characterPos, &writeArea)) {
+			print_last_error("printing grid");
+			return false;
+		}
+		break;
+	default:
+		return false;
+	}
 }

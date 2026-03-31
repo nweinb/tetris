@@ -1,24 +1,23 @@
 #pragma once
 #include <Windows.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "Errors.h"
+#include "EnumCodes.h"
 
 /*
-* Returns matching color attributes to be used in WriteConsoleOutput
+* Sets the color of the given char attribute
+* Params: color - char attribute to change color of
+*		  color_code - color to change char to
 */
+bool set_color(CHAR_INFO* color, uint8_t color_code);
 
-CHAR_INFO* black();
-
-CHAR_INFO* gray();
-
-CHAR_INFO* light_blue();
-
-CHAR_INFO* yellow();
-
-CHAR_INFO* magenta();
-
-CHAR_INFO* green();
-
-CHAR_INFO* red();
-
-CHAR_INFO* dark_blue();
-
-CHAR_INFO* orange();
+/*
+* Prints square to output stream
+* Params: square - square value to print
+*		  column - column to print square
+*		  row - row to print square
+*		  screen_handle - screen to print to
+*/
+bool print_square(uint8_t square, uint32_t column, uint32_t row, HANDLE screen_handle);

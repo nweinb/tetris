@@ -6,7 +6,7 @@
 
 int main() {
 	HANDLE screen_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (INVALID_HANDLE_VALUE == screen_handle) {
+	if (screen_handle == INVALID_HANDLE_VALUE) {
 		print_last_error("opening handle to console");
 		return 1;
 	}

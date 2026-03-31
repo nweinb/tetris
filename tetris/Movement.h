@@ -1,23 +1,37 @@
+#pragma once
 #include <stdint.h>
 
 #include "Blocks.h"
-
-//TODO need to fix stop at walls
+#include "Board.h"
 
 /*
 * Moves given block left one space
-* Params: block_position - the position of the block to move
+* Params: block - the position of the block to move
+*		  board - the board the block is moved on
 */
-bool move_block_left(uint32_t block_position[][BOARD_HEIGHT]);
+bool move_block_left(Block* block, Board board);
 
 /*
 * Moves given block right one space
-* Params: block_position - the position of the block to move
+* Params: block - the position of the block to move
+*		  board - the board the block is moved on
 */
-bool move_block_right(uint32_t block_position[][BOARD_HEIGHT]);
+bool move_block_right(Block* block, Board board);
+
+/*
+* Rotates given block clockwise
+* Params: block - the position of the block to move
+*/
+bool rotate_clockwise(Block* block, Board board);
+
+/*
+* Rotates given block counter-clockwise
+* Params: block - the position of the block to move
+*/
+bool rotate_counter_clockwise(Block* block, Board board);
 
 /*
 * Moves given block down one space
-* Params: block_position - the position of the block to move
+* Params: block - the block to move
 */
-bool drop_block(uint32_t block_position[][BOARD_HEIGHT]);
+bool drop_block(Block* block);

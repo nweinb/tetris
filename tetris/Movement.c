@@ -1,64 +1,113 @@
 #include "Movement.h"
 
-bool move_block_left(uint32_t block_position[][BOARD_HEIGHT]) {
-	if (block_position == NULL) {
+bool move_block_left(Block* block, Board board) {
+	if (board == NULL || block == NULL || block->position == NULL || block->shape == NULL) {
 		return false;
 	}
 
-	if (block_position[0][0] != EMPTY || block_position[0][BLOCK_HEIGHT - 1] != EMPTY) {
-		return true;
+	for (uint32_t row = 0; row < BLOCK_HEIGHT; row++) {
+		for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+			if (block->shape[column][row] != EMPTY) {
+				if (column + block->position[X_POS] <= 0 || board[column + block->position[X_POS] - 1][row + block->position[Y_POS]] != EMPTY) {
+					return true;
+				}
+			}
+		}
+	}
+	block->position[X_POS]--;
+	return true;
+}
+
+bool move_block_right(Block* block, Board board) {
+	if (board == NULL || block == NULL || block->position == NULL || block->shape == NULL) {
+		return false;
 	}
 
-	for (uint32_t row = 0; row < BOARD_HEIGHT; row++) {
-		for (uint32_t column = 0; column < BOARD_WIDTH; column++) {
-			if (column - 1 >= 0 && block_position[column][row] != EMPTY) {
-				block_position[column - 1][row] = block_position[column][row];
-				block_position[column][row] = TEMP_SQUARE;
+	for (uint32_t row = 0; row < BLOCK_HEIGHT; row++) {
+		for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+			if (block->shape[column][row] != EMPTY) {
+				if (column + block->position[X_POS] + 1 >= BOARD_WIDTH || board[column + block->position[X_POS] + 1][row + block->position[Y_POS]] != EMPTY) {
+					return true;
+				}
+			}
+		}
+	}
+	block->position[X_POS]++;
+	return true;
+}
+
+bool rotate_clockwise(Block* block, Board board) {
+	if (board == NULL || block == NULL || block->position == NULL || block->shape == NULL) {
+		return false;
+	}
+
+	for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+		for (uint32_t row = 0; row < BLOCK_HEIGHT / 2; row++) {
+			uint8_t temp = block->shape[column][row];
+			block->shape[column][row] = block->shape[column][BLOCK_WIDTH - row - 1];
+			block->shape[column][BLOCK_WIDTH - row - 1] = temp;
+		}
+	}
+	for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+		for (uint32_t row = column + 1; row < BLOCK_HEIGHT; row++) {
+			uint8_t temp = block->shape[column][row];
+			block->shape[column][row] = block->shape[row][column];
+			block->shape[row][column] = temp;
+		}
+	}
+
+	for (uint32_t row = 0; row < BLOCK_HEIGHT; row++) {
+		for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+			if (block->shape[column][row] != EMPTY) {
+				if (column + block->position[X_POS] >= BOARD_WIDTH || column + block->position[X_POS] < 0
+					|| board[column + block->position[X_POS]][row + block->position[Y_POS]] != EMPTY) {
+					return rotate_counter_clockwise(block, board);
+				}
 			}
 		}
 	}
 	return true;
 }
 
-bool move_block_right(uint32_t block_position[][BOARD_HEIGHT]) {
-	if (block_position == NULL) {
+
+bool rotate_counter_clockwise(Block* block, Board board) {
+	if (block == NULL || block->position == NULL || block->shape == NULL) {
 		return false;
 	}
 
-	if (block_position[BOARD_WIDTH - 1][0] != EMPTY || block_position[BOARD_WIDTH - 1][BLOCK_HEIGHT - 1] != EMPTY) {
-		return true;
+	for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+		for (uint32_t row = column + 1; row < BLOCK_HEIGHT; row++) {
+			uint8_t temp = block->shape[column][row];
+			block->shape[column][row] = block->shape[row][column];
+			block->shape[row][column] = temp;
+		}
+	}
+	for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+		for (uint32_t row = 0; row < BLOCK_HEIGHT / 2; row++) {
+			uint8_t temp = block->shape[column][row];
+			block->shape[column][row] = block->shape[column][BLOCK_HEIGHT - row - 1];
+			block->shape[column][BLOCK_HEIGHT - row - 1] = temp;
+		}
 	}
 
-	for (uint32_t row = 0; row < BOARD_HEIGHT; row++) {
-		for (int32_t column = BOARD_WIDTH - 1; column >= 0; column--) {
-			if (column + 1 < BOARD_WIDTH && block_position[column][row] != EMPTY) {
-				block_position[column + 1][row] = block_position[column][row];
-				block_position[column][row] = TEMP_SQUARE;
+	for (uint32_t row = 0; row < BLOCK_HEIGHT; row++) {
+		for (uint32_t column = 0; column < BLOCK_WIDTH; column++) {
+			if (block->shape[column][row] != EMPTY) {
+				if (column + block->position[X_POS] >= BOARD_WIDTH || column + block->position[X_POS] < 0
+					|| board[column + block->position[X_POS]][row + block->position[Y_POS]] != EMPTY) {
+					return rotate_clockwise(block, board);
+				}
 			}
 		}
 	}
 	return true;
 }
-
-bool drop_block(uint32_t block_position[][BOARD_HEIGHT]) {
-	if (block_position == NULL) {
+bool drop_block(Block* block) {
+	if (block == NULL || block->position == NULL) {
 		return false;
 	}
-
-	for (uint32_t column = 0; column < BOARD_WIDTH; column++) {
-		if (block_position[column][BOARD_HEIGHT - 1] != EMPTY) {
-			return true;
-		}
-	}
-
-	for (int32_t row = BOARD_HEIGHT - 1; row >= 0; row--) {
-		for (uint32_t column = 0; column < BOARD_WIDTH; column++) {
-			if (block_position[column][row] != EMPTY) {
-				block_position[column][row + 1] = block_position[column][row];
-				block_position[column][row] = TEMP_SQUARE;
-			}
-		}
-	}
+	
+	block->position[Y_POS]++;
 	return true;
 }
 
